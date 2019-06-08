@@ -1,0 +1,116 @@
+.searchArea {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-areas:
+    ". . logo logo .  . "
+    "searchForm searchForm searchForm searchForm searchForm searchForm";
+  grid-gap: 10px;
+}
+.searchForm {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: 120px;
+  grid-template-areas: "keyword keyword keyword type type search";
+  grid-gap: 10px;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 2em;
+  margin: 2em 4em;
+}
+.searchAreaContent {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  background-color: rgba(0, 0, 0, 0.1);
+  grid-template-areas: "logo searchForm searchForm searchForm searchForm searchForm searchForm searchForm ";
+  grid-gap: 10px;
+  margin-bottom: 2.5em;
+}
+.btnSearch {
+  display: flex;
+  align-self: flex-end !important;
+  margin: 0 auto;
+}
+@media screen and (max-width: 768px) {
+  .btnSearch {
+    display: flex;
+    align-self: flex-end !important;
+    margin: 0 auto;
+  }
+  .logoHide {
+    display: none !important;
+  }
+  .thumbnail {
+    display: none !important;
+  }
+  .searchArea {
+    margin-top: 2em;
+  }
+  .searchAreaContent {
+    grid-template-columns: 1fr;
+    grid-template-areas: "searchForm";
+  }
+  .searchForm {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 80px;
+    grid-template-areas:
+      "keyword"
+      "type"
+      "search";
+    grid-gap: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 0.5em 1em;
+    margin: 0.5em 1em;
+  }
+  .searchFormContent {
+    grid-template-areas:
+      "keyword keyword keyword"
+      "type type search";
+  }
+}
+.searchBackground {
+  background-color: rgba(0, 0, 0, 0);
+}
+.logo {
+  grid-area: logo;
+  display: flex;
+  align-items: center;
+}
+.imgLogo {
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.searchForm {
+  grid-area: searchForm;
+  flex-grow: 1;
+  flex-wrap: wrap;
+}
+.itemContainer {
+  display: flex;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  min-height: 70px !important;
+}
+.btnSearchContainer {
+  text-align: center;
+}
+.keyword {
+  grid-area: keyword;
+  color: black;
+  display: flex;
+  align-items: center;
+}
+.type {
+  grid-area: type;
+  color: black;
+  display: flex;
+  align-items: center;
+}
+.search {
+  grid-area: search;
+  /* margin: 0 auto; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
