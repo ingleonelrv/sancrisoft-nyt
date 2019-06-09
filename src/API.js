@@ -1,4 +1,3 @@
-// import { BASE_API } from "../utils/apikeys.json";
 const API_KEY = "ukRhZ6BIeaOPolw779Sq4ss1qjmqokJX";
 const BASE_API = `https://api.nytimes.com/svc/search/v2`;
 
