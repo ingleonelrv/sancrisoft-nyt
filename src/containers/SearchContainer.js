@@ -43,6 +43,7 @@ export class SearchContainer extends Component {
         "rgba(0,0,0,0)";
 
       this.props.searchArticles(result.response);
+      this.props.isLoading(false);
       this.props.setPage(this.props.page);
     } catch (error) {
       this.props.isLoading(false);
