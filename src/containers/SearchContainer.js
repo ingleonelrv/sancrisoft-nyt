@@ -1,93 +1,52 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+//REDUX ACTIONS
+import isLoading from "../redux/actions/isLoading";
+import searchArticles from "../redux/actions/searchArticles";
+import clearArticles from "../redux/actions/clearArticles";
+import setPage from "../redux/actions/setPage";
+import clearPage from "../redux/actions/clearPage";
+import setError from "../redux/actions/setError";
+import clearError from "../redux/actions/clearError";
+
 import API from "../API";
+
 import Search from "../components/Search";
 import LoadingPage from "../components/LoadingPage";
 import ErrorPage from "../components/ErrorPage";
 import ArticlesContainer from "./ArticlesContainer";
+
 export class SearchContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
-      error: null,
-      data: [],
-      hits: 0,
-      page: 0,
       searchText: "",
-      selectedType: "News",
-      type_of_material: [
-        "Addendum",
-        "An Analysis",
-        "An Appraisal",
-        "Article",
-        "Banner",
-        "Biography",
-        "Birth Notice",
-        "Blog",
-        "Brief",
-        "Caption",
-        "Chronology",
-        "Column",
-        "Correction",
-        "Economic Analysis",
-        "Editorial",
-        "Editorial Cartoon",
-        "Editors Note",
-        "First Chapter",
-        "Front Page",
-        "Glossary",
-        "Interactive Feature",
-        "Interactive Graphic",
-        "Interview",
-        "Letter",
-        "List",
-        "Marriage Announcement",
-        "Military Analysis",
-        "News",
-        "News Analysis",
-        "Newsletter",
-        "Obituary",
-        "Obituary (Obit)",
-        "Op-Ed",
-        "Paid Death Notice",
-        "Postscript",
-        "Premium",
-        "Question",
-        "Quote",
-        "Recipe",
-        "Review",
-        "Schedule",
-        "SectionFront",
-        "Series",
-        "Slideshow",
-        "Special Report",
-        "Statistics",
-        "Summary",
-        "Text",
-        "Video",
-        "Web Log"
-      ]
+      selectedType: "News"
     };
   }
   //CALL TO API AND GET DATA
   fetchData = async () => {
-    this.setState({ loading: true, error: null });
-    const { searchText, selectedType, page } = this.state;
+    this.props.isLoading(true);
+    this.props.clearError();
+    // this.setState({ loading: true, error: null });
+    const { searchText, selectedType } = this.state;
     try {
-      const result = await API.getArticles(selectedType, searchText, page);
+      const result = await API.getArticles(
+        selectedType,
+        searchText,
+        this.props.page
+      );
       document.getElementById("searchArea").className = "searchAreaContent";
       document.getElementById("searchForm").className += " searchFormContent";
       document.getElementById("logo").classList.add("logoHide");
       document.getElementById("searchForm").style.backgroundColor =
         "rgba(0,0,0,0)";
-      this.setState({
-        loading: false,
-        data: [].concat(this.state.data, result.response.docs),
-        hits: result.response.meta.hits,
-        page: this.state.page + 1
-      });
+
+      this.props.searchArticles(result.response);
+      this.props.setPage(this.props.page);
     } catch (error) {
-      this.setState({ loading: false, error });
+      this.props.isLoading(false);
+      this.props.setError(error);
     }
   };
   //GET THE WRITED
@@ -100,9 +59,9 @@ export class SearchContainer extends Component {
   };
   //BUTTON SEARCH HANDLE
   handleSearch = () => {
-    this.setState({ page: 0, data: [] }, () => {
-      this.fetchData();
-    });
+    this.props.clearPage();
+    this.props.clearArticles();
+    this.fetchData();
   };
   //HANDLE THE KEYWORD SELECTED FOR A NEW SEARCH
   handleKeywordArticle = e => {
@@ -116,17 +75,15 @@ export class SearchContainer extends Component {
         <Search
           searchText={this.state.searchText}
           selectedType={this.state.selectedType}
-          types={this.state.type_of_material}
+          types={this.props.type_of_material}
           handleChangeInput={this.handleChangeInput}
           handleChangeSelect={this.handleChangeSelect}
           handleSearch={this.handleSearch}
         />
-        {this.state.loading && <LoadingPage />}
-        {this.state.error && <ErrorPage error={this.state.error} />}
-        {this.state.data.length > 0 && (
+        {this.props.loading && <LoadingPage />}
+        {this.props.error && <ErrorPage error={this.props.error} />}
+        {this.props.articlesList.length > 0 && (
           <ArticlesContainer
-            hits={this.state.hits}
-            articlesList={this.state.data}
             handleGetMore={() => this.fetchData()}
             handleKeywordArticle={this.handleKeywordArticle}
           />
@@ -135,5 +92,25 @@ export class SearchContainer extends Component {
     );
   }
 }
-
-export default SearchContainer;
+const mapStateToProps = state => {
+  return {
+    type_of_material: state.TypeMaterialReducer,
+    articlesList: state.ArticuleListReducer.articlesList,
+    loading: state.LoadingReducer.loading,
+    page: state.PageReducer.page,
+    error: state.ErrorReducer.error
+  };
+};
+const mapDispatchToProps = {
+  isLoading,
+  searchArticles,
+  clearArticles,
+  setPage,
+  clearPage,
+  setError,
+  clearError
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchContainer);

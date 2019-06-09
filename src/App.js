@@ -1,12 +1,15 @@
 import React from "react";
 import "./App.css";
-import Layout from "./components/Layout";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 import SearchContainer from "./containers/SearchContainer";
 function App() {
   return (
-    <Layout>
-      <SearchContainer />
-    </Layout>
+    <Provider store={store}>
+      <div className="App">
+        <SearchContainer />
+      </div>
+    </Provider>
   );
 }
 
